@@ -1,3 +1,5 @@
+import aboutImage from "../assets/images/Restaurant-front.avif";
+
 export default function About() {
   return (
     <section id="about" className="section-padding bg-[#FCFAF6] deferred-section">
@@ -52,7 +54,7 @@ export default function About() {
         <div className="order-1 md:order-2">
           <div className="relative rounded-[22px] overflow-hidden shadow-[0_26px_55px_rgba(15,15,15,0.12)] group border border-black/5 bg-white">
             <img
-              src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&h=600&fit=crop&q=90"
+              src={aboutImage}
               alt="About Us"
               className="premium-image w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
             />

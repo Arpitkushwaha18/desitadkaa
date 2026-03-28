@@ -1,4 +1,7 @@
 import React from "react";
+import specialtyMughlai from "../assets/images/mughlai.avif";
+import specialtyIndian from "../assets/images/butterchicken naan.avif";
+import specialtyChinese from "../assets/images/chinese.avif";
 
 const zoomAnimation = `
   @keyframes zoomInSmooth {
@@ -24,15 +27,15 @@ const zoomAnimation = `
 export default function OurSpecialty() {
   const images = [
     {
-      src: "https://images.pexels.com/photos/2233729/pexels-photo-2233729.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&dpr=1",
+      src: specialtyMughlai,
       alt: "Mughlai biryani in a clay pot with golden rice and chicken",
     },
     {
-      src: "https://images.pexels.com/photos/1624487/pexels-photo-1624487.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&dpr=1",
+      src: specialtyIndian,
       alt: "Creamy butter chicken or paneer curry in a white bowl garnished with cilantro",
     },
     {
-      src: "https://images.pexels.com/photos/461198/pexels-photo-461198.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&dpr=1",
+      src: specialtyChinese,
       alt: "Glazed orange chicken or honey chili potato with glossy sauce",
     },
   ];

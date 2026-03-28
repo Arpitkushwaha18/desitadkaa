@@ -7,6 +7,10 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { siteConfig } from "../data/siteConfig";
+import heroMain from "../assets/images/main.avif";
+import heroTandoor from "../assets/images/Tandoor.avif";
+import heroButterChicken from "../assets/images/butterchicken naan.avif";
+import heroBiryani from "../assets/images/Biryani.avif";
 
 const slides = [
   {
@@ -14,10 +18,8 @@ const slides = [
     title: "Our Taste is Our Identity",
     hindi: "हमारा स्वाद ही हमारी पहचान है",
     subtitle: "Classic recipes, real spices, and food you'll come back for.",
-    image:
-      "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&dpr=1",
-    imageSmall:
-      "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1",
+    image: heroMain,
+    imageSmall: heroMain,
     alt: "authentic Indian thali with spices and warm traditional setup",
     objectPosition: "center center",
   },
@@ -26,10 +28,8 @@ const slides = [
     title: "Fresh from the Tandoor",
     hindi: "तंदूर से ताज़ा",
     subtitle: "Smoky kebabs and tandoor favourites, served hot.",
-    image:
-      "https://images.pexels.com/photos/2474660/pexels-photo-2474660.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&dpr=1",
-    imageSmall:
-      "https://images.pexels.com/photos/2474660/pexels-photo-2474660.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1",
+    image: heroTandoor,
+    imageSmall: heroTandoor,
     alt: "tandoori prawns and grilled platter closeup",
     objectPosition: "center center",
   },
@@ -38,10 +38,8 @@ const slides = [
     title: "Rich, Creamy Classics",
     hindi: "रिच और मलाईदार स्वाद",
     subtitle: "Butter chicken, soft naan, and rich gravies done right.",
-    image:
-      "https://images.pexels.com/photos/1624487/pexels-photo-1624487.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&dpr=1",
-    imageSmall:
-      "https://images.pexels.com/photos/1624487/pexels-photo-1624487.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1",
+    image: heroButterChicken,
+    imageSmall: heroButterChicken,
     alt: "butter chicken closeup with garnish",
     objectPosition: "center center",
   },
@@ -50,10 +48,8 @@ const slides = [
     title: "Biryani, Done Right",
     hindi: "दम वाली बिरयानी",
     subtitle: "Slow-cooked biryani with deep, comforting flavour.",
-    image:
-      "https://images.pexels.com/photos/2233729/pexels-photo-2233729.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&dpr=1",
-    imageSmall:
-      "https://images.pexels.com/photos/2233729/pexels-photo-2233729.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1",
+    image: heroBiryani,
+    imageSmall: heroBiryani,
     alt: "saffron biryani with raita and garnish",
     objectPosition: "center center",
   },
