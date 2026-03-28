@@ -141,6 +141,7 @@ function buildJsonLd(origin, pathname, metadata) {
         "@id": `${siteUrl}#website`,
         url: siteUrl,
         name: "Desi Tadka",
+        alternateName: "Desi Tadka Kanpur",
         inLanguage: "en-IN",
         publisher: {
           "@id": `${siteUrl}#restaurant`,

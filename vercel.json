@@ -1,4 +1,17 @@
 {
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.desitadka.co.in"
+        }
+      ],
+      "destination": "https://desitadka.co.in/$1",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",
