@@ -54,10 +54,12 @@ const slides = [
 export default function Hero() {
   const [current, setCurrent] = useState(0);
   const [previous, setPrevious] = useState(null);
+  const [loadedSlides, setLoadedSlides] = useState(() => new Set([0]));
   const timeoutRef = useRef(null);
   const transitionTimeoutRef = useRef(null);
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
+  const preloadedSlidesRef = useRef(new Set([0]));
 
   const resetTimeout = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -72,6 +74,48 @@ export default function Hero() {
     transitionTimeoutRef.current = setTimeout(() => {
       setPrevious(null);
     }, 900);
+  };
+
+  const markSlideLoaded = (index) => {
+    setLoadedSlides((previousSlides) => {
+      if (previousSlides.has(index)) return previousSlides;
+
+      const nextSlides = new Set(previousSlides);
+      nextSlides.add(index);
+      return nextSlides;
+    });
+  };
+
+  const preloadSlide = (index, priority = "low") => {
+    if (index < 0 || index >= slides.length) return;
+    if (typeof window === "undefined") return;
+    if (preloadedSlidesRef.current.has(index)) return;
+
+    preloadedSlidesRef.current.add(index);
+
+    const slide = slides[index];
+    const isDesktopViewport = window.matchMedia("(min-width: 1024px)").matches;
+    const imageSource = isDesktopViewport
+      ? slide.image
+      : slide.imageSmall || slide.image;
+    const image = new window.Image();
+
+    image.decoding = "async";
+    image.fetchPriority = priority;
+    image.src = imageSource;
+
+    if (image.complete) {
+      markSlideLoaded(index);
+      return;
+    }
+
+    image.onload = () => {
+      markSlideLoaded(index);
+    };
+
+    image.onerror = () => {
+      preloadedSlidesRef.current.delete(index);
+    };
   };
 
   const goToSlide = (nextIndex) => {
@@ -128,6 +172,37 @@ export default function Hero() {
 
   useEffect(() => () => resetTransitionTimeout(), []);
 
+  useEffect(() => {
+    markSlideLoaded(current);
+
+    const nextIndex = (current + 1) % slides.length;
+    const previousIndex = (current - 1 + slides.length) % slides.length;
+
+    preloadSlide(nextIndex);
+    preloadSlide(previousIndex);
+  }, [current]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+
+    const warmRemainingSlides = () => {
+      slides.forEach((_, index) => {
+        if (index !== current) preloadSlide(index);
+      });
+    };
+
+    if ("requestIdleCallback" in window) {
+      const idleId = window.requestIdleCallback(warmRemainingSlides, {
+        timeout: 2500,
+      });
+
+      return () => window.cancelIdleCallback(idleId);
+    }
+
+    const timeoutId = window.setTimeout(warmRemainingSlides, 1800);
+    return () => window.clearTimeout(timeoutId);
+  }, []);
+
   const scrollTo = (id) => {
     const element = document.getElementById(id);
     if (element) element.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -153,19 +228,24 @@ export default function Hero() {
             }`}
             aria-hidden={index !== current}
           >
-            <picture className="block w-full h-full">
-              <source media="(min-width:1024px)" srcSet={slide.image} />
-              <img
-                src={slide.imageSmall || slide.image}
-                alt={slide.alt || slide.title}
-                loading="eager"
-                fetchPriority={index === 0 ? "high" : "low"}
-                decoding={index === 0 ? "sync" : "async"}
-                sizes="100vw"
-                className="w-full h-full object-cover"
-                style={{ objectPosition: slide.objectPosition }}
-              />
-            </picture>
+            {(loadedSlides.has(index) ||
+              index === current ||
+              index === previous) && (
+              <picture className="block w-full h-full">
+                <source media="(min-width:1024px)" srcSet={slide.image} />
+                <img
+                  src={slide.imageSmall || slide.image}
+                  alt={slide.alt || slide.title}
+                  loading={index === current ? "eager" : "lazy"}
+                  fetchPriority={index === current ? "high" : "low"}
+                  decoding={index === current ? "sync" : "async"}
+                  sizes="100vw"
+                  className="w-full h-full object-cover"
+                  style={{ objectPosition: slide.objectPosition }}
+                  onLoad={() => markSlideLoaded(index)}
+                />
+              </picture>
+            )}
           </div>
         ))}
 
