@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Trash2, ShoppingCart, X } from "lucide-react";
+import { useLockedBodyScroll } from "../hooks/useLockedBodyScroll";
 
 export default function CartModal({
   cart,
@@ -11,6 +12,7 @@ export default function CartModal({
   onCheckout,
 }) {
   const [specialInstructions, setSpecialInstructions] = useState("");
+  useLockedBodyScroll(true);
 
   return (
     <div className="fixed inset-0 bg-black/55 flex items-center justify-center z-50 p-4 backdrop-blur-md">

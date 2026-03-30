@@ -19,7 +19,7 @@ const testimonials = [
     id: 3,
     name: "Anil Patel",
     location: "Kalyanpur, Kanpur UP",
-    rating: 5,
+    rating: 4,
     text: "Excellent quality and authentic recipes!",
   },
   {
@@ -33,14 +33,14 @@ const testimonials = [
     id: 5,
     name: "Ravi Verma",
     location: "Kalyanpur, Kanpur UP",
-    rating: 5,
+    rating:4,
     text: "Paneer butter masala is incredible!",
   },
   {
     id: 6,
     name: "Anjali Yadav",
     location: "Kalyanpur, Kanpur UP",
-    rating: 5,
+    rating: 4,
     text: "Fresh breads & perfectly spiced gravies!",
   },
 ];

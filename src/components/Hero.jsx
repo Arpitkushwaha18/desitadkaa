@@ -7,10 +7,6 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { siteConfig } from "../data/siteConfig";
-import heroMain from "../assets/images/main.avif";
-import heroTandoor from "../assets/images/Tandoor.avif";
-import heroButterChicken from "../assets/images/butterchicken naan.avif";
-import heroBiryani from "../assets/images/Biryani.avif";
 
 const slides = [
   {
@@ -18,8 +14,8 @@ const slides = [
     title: "Our Taste is Our Identity",
     hindi: "हमारा स्वाद ही हमारी पहचान है",
     subtitle: "Classic recipes, real spices, and food you'll come back for.",
-    image: heroMain,
-    imageSmall: heroMain,
+    image: "/hero-main.avif",
+    imageSmall: "/hero-main.avif",
     alt: "authentic Indian thali with spices and warm traditional setup",
     objectPosition: "center center",
   },
@@ -28,8 +24,8 @@ const slides = [
     title: "Fresh from the Tandoor",
     hindi: "तंदूर से ताज़ा",
     subtitle: "Smoky kebabs and tandoor favourites, served hot.",
-    image: heroTandoor,
-    imageSmall: heroTandoor,
+    image: "/hero-tandoor.avif",
+    imageSmall: "/hero-tandoor.avif",
     alt: "tandoori prawns and grilled platter closeup",
     objectPosition: "center center",
   },
@@ -38,8 +34,8 @@ const slides = [
     title: "Rich, Creamy Classics",
     hindi: "रिच और मलाईदार स्वाद",
     subtitle: "Butter chicken, soft naan, and rich gravies done right.",
-    image: heroButterChicken,
-    imageSmall: heroButterChicken,
+    image: "/hero-butter-chicken.avif",
+    imageSmall: "/hero-butter-chicken.avif",
     alt: "butter chicken closeup with garnish",
     objectPosition: "center center",
   },
@@ -48,8 +44,8 @@ const slides = [
     title: "Biryani, Done Right",
     hindi: "दम वाली बिरयानी",
     subtitle: "Slow-cooked biryani with deep, comforting flavour.",
-    image: heroBiryani,
-    imageSmall: heroBiryani,
+    image: "/hero-biryani.avif",
+    imageSmall: "/hero-biryani.avif",
     alt: "saffron biryani with raita and garnish",
     objectPosition: "center center",
   },
@@ -58,6 +54,7 @@ const slides = [
 export default function Hero() {
   const [current, setCurrent] = useState(0);
   const [previous, setPrevious] = useState(null);
+  const [loadedSlides, setLoadedSlides] = useState(() => new Set());
   const timeoutRef = useRef(null);
   const transitionTimeoutRef = useRef(null);
   const touchStartX = useRef(null);
@@ -143,6 +140,18 @@ export default function Hero() {
 
   useEffect(() => () => resetTransitionTimeout(), []);
 
+  const handleImageLoad = (index) => {
+    setLoadedSlides((previousSlides) => {
+      if (previousSlides.has(index)) {
+        return previousSlides;
+      }
+
+      const nextSlides = new Set(previousSlides);
+      nextSlides.add(index);
+      return nextSlides;
+    });
+  };
+
   const scrollTo = (id) => {
     const element = document.getElementById(id);
     if (element) element.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -158,6 +167,17 @@ export default function Hero() {
       style={{ contain: "layout style paint" }}
     >
       <div className="absolute inset-0 z-0">
+        <div
+          className={`absolute inset-0 transition-opacity duration-500 ${
+            loadedSlides.has(current) ? "opacity-0" : "opacity-100"
+          }`}
+          aria-hidden="true"
+          style={{
+            background:
+              "radial-gradient(circle at top, rgba(240,197,106,0.22), transparent 42%), linear-gradient(135deg, #1A120D 0%, #24160F 36%, #0F0F0F 100%)",
+          }}
+        />
+
         {slides.map((slide, index) => (
           activeSlides.includes(index) ? (
             <div
@@ -176,10 +196,13 @@ export default function Hero() {
                   alt={slide.alt || slide.title}
                   loading={current === 0 && index === 0 ? "eager" : "lazy"}
                   fetchPriority={current === 0 && index === 0 ? "high" : "auto"}
-                  decoding="async"
+                  decoding={current === 0 && index === 0 ? "sync" : "async"}
                   sizes="100vw"
-                  className="w-full h-full object-cover"
+                  className={`w-full h-full object-cover transition-opacity duration-500 ${
+                    loadedSlides.has(index) ? "opacity-100" : "opacity-0"
+                  }`}
                   style={{ objectPosition: slide.objectPosition }}
+                  onLoad={() => handleImageLoad(index)}
                 />
               </picture>
             </div>

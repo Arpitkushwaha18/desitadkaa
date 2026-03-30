@@ -1,5 +1,6 @@
 import { memo, useState } from "react";
 import { ShoppingCart, Star } from "lucide-react";
+import VariantSelectorModal from "./VariantSelectorModal";
 
 function MenuCard({ item, onAdd, itemCartQty = 0 }) {
   const [showVariants, setShowVariants] = useState(false);
@@ -90,6 +91,7 @@ function MenuCard({ item, onAdd, itemCartQty = 0 }) {
           </div>
 
           <button
+            type="button"
             onClick={handleAddClick}
             className="w-full mt-4 bg-[#111111] text-white font-medium py-2.5 rounded-[12px] flex items-center justify-between md:justify-center gap-2 transition-all duration-300 ease-out hover:bg-[#D7A43A] hover:text-[#111111] hover:shadow-[0_18px_34px_rgba(215,164,58,0.24)] hover:scale-[1.02] active:scale-95 relative"
           >
@@ -112,39 +114,12 @@ function MenuCard({ item, onAdd, itemCartQty = 0 }) {
         </div>
       </div>
 
-      {showVariants && (
-        <div className="fixed inset-0 bg-black/55 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-[22px] p-8 max-w-sm w-full shadow-[0_28px_60px_rgba(15,15,15,0.18)] border border-black/5">
-            <h4 className="text-xl font-playfair font-semibold text-deepMaroon mb-2 tracking-[0.04em]">
-              {item.name}
-            </h4>
-            <p className="text-sm text-luxeGray mb-6">Select your preferred size:</p>
-
-            <div className="grid grid-cols-2 gap-3 mb-6">
-              {variants.map((variant, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => handleVariantSelect(variant)}
-                  className="bg-[#F9F5EF] hover:bg-saffronGold/10 active:bg-saffronGold/15 border border-black/5 hover:border-saffronGold/30 rounded-xl py-3 text-center font-medium transition-all duration-300"
-                >
-                  <div className="text-deepMaroon font-playfair">{variant.size}</div>
-                  <div className="text-saffronGold font-semibold text-sm mt-1">
-                    {"\u20B9"}
-                    {variant.price}
-                  </div>
-                </button>
-              ))}
-            </div>
-
-            <button
-              onClick={() => setShowVariants(false)}
-              className="w-full text-luxeGray hover:text-deepMaroon text-sm font-medium py-2.5 border border-black/10 rounded-lg transition-all duration-300 hover:bg-[#F5F1EB]"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
+      <VariantSelectorModal
+        item={item}
+        isOpen={showVariants}
+        onClose={() => setShowVariants(false)}
+        onSelect={handleVariantSelect}
+      />
     </>
   );
 }
