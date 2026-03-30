@@ -54,7 +54,6 @@ const slides = [
 export default function Hero() {
   const [current, setCurrent] = useState(0);
   const [previous, setPrevious] = useState(null);
-  const [loadedSlides, setLoadedSlides] = useState(() => new Set());
   const timeoutRef = useRef(null);
   const transitionTimeoutRef = useRef(null);
   const touchStartX = useRef(null);
@@ -127,37 +126,12 @@ export default function Hero() {
     return () => resetTimeout();
   }, [current]);
 
-  useEffect(() => {
-    const nextSlide = slides[(current + 1) % slides.length];
-    const preloadImage = new Image();
-
-    preloadImage.src = nextSlide.imageSmall || nextSlide.image;
-
-    return () => {
-      preloadImage.src = "";
-    };
-  }, [current]);
-
   useEffect(() => () => resetTransitionTimeout(), []);
-
-  const handleImageLoad = (index) => {
-    setLoadedSlides((previousSlides) => {
-      if (previousSlides.has(index)) {
-        return previousSlides;
-      }
-
-      const nextSlides = new Set(previousSlides);
-      nextSlides.add(index);
-      return nextSlides;
-    });
-  };
 
   const scrollTo = (id) => {
     const element = document.getElementById(id);
     if (element) element.scrollIntoView({ behavior: "smooth", block: "start" });
   };
-
-  const activeSlides = previous === null ? [current] : [previous, current];
 
   return (
     <section
@@ -167,46 +141,32 @@ export default function Hero() {
       style={{ contain: "layout style paint" }}
     >
       <div className="absolute inset-0 z-0">
-        <div
-          className={`absolute inset-0 transition-opacity duration-500 ${
-            loadedSlides.has(current) ? "opacity-0" : "opacity-100"
-          }`}
-          aria-hidden="true"
-          style={{
-            background:
-              "radial-gradient(circle at top, rgba(240,197,106,0.22), transparent 42%), linear-gradient(135deg, #1A120D 0%, #24160F 36%, #0F0F0F 100%)",
-          }}
-        />
-
         {slides.map((slide, index) => (
-          activeSlides.includes(index) ? (
-            <div
-              key={slide.id}
-              className={`absolute inset-0 transition-opacity duration-900 ease-in-out ${
-                index === current
-                  ? "opacity-100 z-10 hero-slide-active"
+          <div
+            key={slide.id}
+            className={`absolute inset-0 transition-opacity duration-900 ease-in-out ${
+              index === current
+                ? "opacity-100 z-10 hero-slide-active"
+                : index === previous
+                  ? "opacity-0 z-0"
                   : "opacity-0 z-0 pointer-events-none"
-              }`}
-              aria-hidden={index !== current}
-            >
-              <picture className="block w-full h-full">
-                <source media="(min-width:1024px)" srcSet={slide.image} />
-                <img
-                  src={slide.imageSmall || slide.image}
-                  alt={slide.alt || slide.title}
-                  loading={current === 0 && index === 0 ? "eager" : "lazy"}
-                  fetchPriority={current === 0 && index === 0 ? "high" : "auto"}
-                  decoding={current === 0 && index === 0 ? "sync" : "async"}
-                  sizes="100vw"
-                  className={`w-full h-full object-cover transition-opacity duration-500 ${
-                    loadedSlides.has(index) ? "opacity-100" : "opacity-0"
-                  }`}
-                  style={{ objectPosition: slide.objectPosition }}
-                  onLoad={() => handleImageLoad(index)}
-                />
-              </picture>
-            </div>
-          ) : null
+            }`}
+            aria-hidden={index !== current}
+          >
+            <picture className="block w-full h-full">
+              <source media="(min-width:1024px)" srcSet={slide.image} />
+              <img
+                src={slide.imageSmall || slide.image}
+                alt={slide.alt || slide.title}
+                loading="eager"
+                fetchPriority={index === 0 ? "high" : "low"}
+                decoding={index === 0 ? "sync" : "async"}
+                sizes="100vw"
+                className="w-full h-full object-cover"
+                style={{ objectPosition: slide.objectPosition }}
+              />
+            </picture>
+          </div>
         ))}
 
         <div
