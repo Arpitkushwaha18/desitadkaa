@@ -1,4 +1,3 @@
-import whatsappIcon from "../assets/images/whatsapp icon.png";
 import { siteConfig } from "../data/siteConfig";
 
 export default function WhatsAppButton() {
@@ -11,8 +10,11 @@ export default function WhatsAppButton() {
       aria-label="Chat with us on WhatsApp"
     >
       <img
-        src={whatsappIcon}
+        src="/whatsapp-icon-64.webp"
         alt="WhatsApp"
+        loading="lazy"
+        decoding="async"
+        fetchPriority="low"
         className="w-5 h-5 sm:w-6 sm:h-6 object-contain"
       />
       <span className="hidden sm:inline">Chat</span>

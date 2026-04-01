@@ -14,8 +14,9 @@ const slides = [
     title: "Our Taste is Our Identity",
     hindi: "हमारा स्वाद ही हमारी पहचान है",
     subtitle: "Classic recipes, real spices, and food you'll come back for.",
-    image: "/hero-main.avif",
-    imageSmall: "/hero-main.avif",
+    imageOriginal: "/hero-main.avif",
+    imageDesktop: "/hero-main-1600.avif",
+    imageSmall: "/hero-main-960.avif",
     alt: "authentic Indian thali with spices and warm traditional setup",
     objectPosition: "center center",
   },
@@ -24,8 +25,9 @@ const slides = [
     title: "Fresh from the Tandoor",
     hindi: "तंदूर से ताज़ा",
     subtitle: "Smoky kebabs and tandoor favourites, served hot.",
-    image: "/hero-tandoor.avif",
-    imageSmall: "/hero-tandoor.avif",
+    imageOriginal: "/hero-tandoor.avif",
+    imageDesktop: "/hero-tandoor-1600.avif",
+    imageSmall: "/hero-tandoor-960.avif",
     alt: "tandoori prawns and grilled platter closeup",
     objectPosition: "center center",
   },
@@ -34,8 +36,9 @@ const slides = [
     title: "Rich, Creamy Classics",
     hindi: "रिच और मलाईदार स्वाद",
     subtitle: "Butter chicken, soft naan, and rich gravies done right.",
-    image: "/hero-butter-chicken%20naan.avif",
-    imageSmall: "/hero-butter-chicken%20naan.avif",
+    imageOriginal: "/hero-butter-chicken-naan.avif",
+    imageDesktop: "/hero-butter-chicken-naan-1600.avif",
+    imageSmall: "/hero-butter-chicken-naan-960.avif",
     alt: "butter chicken closeup with garnish",
     objectPosition: "center center",
   },
@@ -44,8 +47,9 @@ const slides = [
     title: "Biryani, Done Right",
     hindi: "दम वाली बिरयानी",
     subtitle: "Slow-cooked biryani with deep, comforting flavour.",
-    image: "/hero-biryani.avif",
-    imageSmall: "/hero-biryani.avif",
+    imageOriginal: "/hero-biryani.avif",
+    imageDesktop: "/hero-biryani-1600.avif",
+    imageSmall: "/hero-biryani-960.avif",
     alt: "saffron biryani with raita and garnish",
     objectPosition: "center center",
   },
@@ -94,10 +98,16 @@ export default function Hero() {
     preloadedSlidesRef.current.add(index);
 
     const slide = slides[index];
-    const isDesktopViewport = window.matchMedia("(min-width: 1024px)").matches;
-    const imageSource = isDesktopViewport
-      ? slide.image
-      : slide.imageSmall || slide.image;
+    const viewportWidth = window.innerWidth || 1024;
+    const dpr = window.devicePixelRatio || 1;
+    const isLargeViewport = viewportWidth >= 1280;
+
+    let imageSource = slide.imageSmall;
+    if (isLargeViewport) {
+      imageSource = dpr > 1.5 ? slide.imageOriginal : slide.imageDesktop;
+    } else if (viewportWidth >= 768) {
+      imageSource = dpr > 1.5 ? slide.imageDesktop : slide.imageSmall;
+    }
     const image = new window.Image();
 
     image.decoding = "async";
@@ -232,9 +242,19 @@ export default function Hero() {
               index === current ||
               index === previous) && (
               <picture className="block w-full h-full">
-                <source media="(min-width:1024px)" srcSet={slide.image} />
+                <source
+                  media="(min-width:1280px)"
+                  srcSet={`${slide.imageDesktop} 1600w, ${slide.imageOriginal} 2400w`}
+                  sizes="100vw"
+                />
+                <source
+                  media="(min-width:768px)"
+                  srcSet={`${slide.imageDesktop} 1600w, ${slide.imageOriginal} 2400w`}
+                  sizes="100vw"
+                />
                 <img
-                  src={slide.imageSmall || slide.image}
+                  src={slide.imageSmall}
+                  srcSet={`${slide.imageSmall} 960w, ${slide.imageDesktop} 1600w, ${slide.imageOriginal} 2400w`}
                   alt={slide.alt || slide.title}
                   loading={index === current ? "eager" : "lazy"}
                   fetchPriority={index === current ? "high" : "low"}
