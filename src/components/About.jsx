@@ -56,6 +56,9 @@ export default function About() {
             <img
               src={aboutImage}
               alt="About Us"
+              loading="lazy"
+              decoding="async"
+              fetchPriority="low"
               className="premium-image w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
             />
             <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-[#C75B12]/12 opacity-70 transition-opacity duration-500 rounded-[22px]" />

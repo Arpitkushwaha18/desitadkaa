@@ -29,6 +29,8 @@ export default function OrderNow() {
                 alt="Swiggy"
                 className="h-10 sm:h-12 w-auto object-contain transform group-hover:scale-105 transition-transform duration-300"
                 loading="lazy"
+                decoding="async"
+                fetchPriority="low"
               />
               <span className="text-sm font-medium tracking-[0.18em] uppercase text-deepMaroon">
                 Order Online

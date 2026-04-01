@@ -1,17 +1,10 @@
+import { Suspense, lazy, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
-import CategoryShowcase from "../components/CategoryShowcase";
-import OurSpecialty from "../components/OurSpecialty";
-import CartModal from "../components/CartModal";
-import About from "../components/About";
-import Gallery from "../components/Gallery";
-import Testimonials from "../components/Testimonials";
-import ContactCTA from "../components/ContactCTA";
-import OrderNow from "../components/OrderNow";
-import Footer from "../components/Footer";
-import WhatsAppButton from "../components/WhatsAppButton";
-import { homeCategoryCards } from "../data/homeCategoryCards";
 import { useCart } from "../hooks/useCart";
+
+const CartModal = lazy(() => import("../components/CartModal"));
+const HomeSections = lazy(() => import("../components/HomeSections"));
 
 export default function Home() {
   const {
@@ -26,38 +19,46 @@ export default function Home() {
     proceedToCheckout,
   } = useCart();
 
+  useEffect(() => {
+    const warmHomeChunks = () => {
+      import("../components/HomeSections");
+      import("../components/CartModal");
+    };
+
+    if ("requestIdleCallback" in window) {
+      const idleId = window.requestIdleCallback(warmHomeChunks, {
+        timeout: 1800,
+      });
+      return () => window.cancelIdleCallback(idleId);
+    }
+
+    const timeoutId = window.setTimeout(warmHomeChunks, 900);
+    return () => window.clearTimeout(timeoutId);
+  }, []);
+
   return (
     <>
       <Navbar cartCount={cartCount} onCartClick={() => setShowCart(true)} />
 
       <Hero />
 
-      <CategoryShowcase categories={homeCategoryCards} />
-
-      <OurSpecialty />
-
-      <About />
-      <Gallery />
-      <Testimonials />
-      <ContactCTA />
+      <Suspense fallback={null}>
+        <HomeSections />
+      </Suspense>
 
       {showCart && (
-        <CartModal
-          cart={cart}
-          totalPrice={totalPrice}
-          onClose={() => setShowCart(false)}
-          onIncrease={increaseQty}
-          onDecrease={decreaseQty}
-          onRemove={removeItem}
-          onCheckout={proceedToCheckout}
-        />
+        <Suspense fallback={null}>
+          <CartModal
+            cart={cart}
+            totalPrice={totalPrice}
+            onClose={() => setShowCart(false)}
+            onIncrease={increaseQty}
+            onDecrease={decreaseQty}
+            onRemove={removeItem}
+            onCheckout={proceedToCheckout}
+          />
+        </Suspense>
       )}
-
-      <OrderNow />
-
-      <WhatsAppButton />
-
-      <Footer />
     </>
   );
 }
